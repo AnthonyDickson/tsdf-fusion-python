@@ -325,7 +325,7 @@ class TSDFVolume:
     tsdf_vol, color_vol = self.get_volume()
 
     # Marching cubes
-    verts, faces, norms, vals = measure.marching_cubes_lewiner(tsdf_vol, level=0)
+    verts, faces, norms, vals = measure.marching_cubes(tsdf_vol, level=0)
     verts_ind = np.round(verts).astype(int)
     verts = verts*self._voxel_size+self._vol_origin  # voxel grid coordinates to world coordinates
 
@@ -343,7 +343,7 @@ def rigid_transform(xyz, transform):
   """Applies a rigid transform to an (N, 3) pointcloud.
   """
   xyz_h = np.hstack([xyz, np.ones((len(xyz), 1), dtype=np.float32)])
-  xyz_t_h = (transform @ xyz_h.T).T
+  xyz_t_h = np.dot(transform, xyz_h.T).T
   return xyz_t_h[:, :3]
 
 
