@@ -8,7 +8,7 @@ from skimage import measure
 
 try:
     import pycuda.driver as cuda
-    import pycuda.autoinit
+    import pycuda.autoprimaryctx
     from pycuda.compiler import SourceModule
 
     FUSION_GPU_MODE = 1
