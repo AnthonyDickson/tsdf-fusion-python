@@ -58,8 +58,13 @@ class TSDFVolume:
 
         self.gpu_mode = use_gpu and FUSION_GPU_MODE
 
+
         # Copy voxel volumes to GPU
         if self.gpu_mode:
+            cuda.init()
+            device = cuda.Device(0)
+            self.ctx = device.make_context()
+
             self._tsdf_vol_gpu = cuda.mem_alloc(self._tsdf_vol_cpu.nbytes)
             cuda.memcpy_htod(self._tsdf_vol_gpu, self._tsdf_vol_cpu)
             self._weight_vol_gpu = cuda.mem_alloc(self._weight_vol_cpu.nbytes)
@@ -341,6 +346,7 @@ class TSDFVolume:
         colors_r = rgb_vals - colors_b * self._color_const - colors_g * 256
         colors = np.floor(np.asarray([colors_r, colors_g, colors_b])).T
         colors = colors.astype(np.uint8)
+        self.ctx.pop()
         return verts, faces, norms, colors
 
 
